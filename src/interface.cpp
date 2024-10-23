@@ -9,66 +9,63 @@ TInterface::TInterface(QWidget *parent)
     setWindowTitle("Работа №4");
     setFixedSize(400, 350);
 
-    name_numerator = new QLabel("Числитель", this);
-    name_numerator->setGeometry(50, 20, 70, 25); // параметры - (X верх.лев.угла px, Y верх.лев.угла px, ширина px, высота px)
+    name_re = new QLabel("Комл. число", this);
+    name_re->setGeometry(50, 20, 70, 25); // параметры - (X верх.лев.угла px, Y верх.лев.угла px, ширина px, высота px)
 
-    numerator = new QLineEdit("1", this);
-    numerator->setGeometry(130, 20, 50, 25);
+    a_re = new QLineEdit("", this);
+    a_re->setGeometry(130, 20, 50, 25);
 
-    name_denumerator = new QLabel("Знаменатель", this);
-    name_denumerator->setGeometry(50, 50, 70 ,25);
+    name_im = new QLabel("+i", this);
+    name_im->setGeometry(190, 20, 70 ,25);
 
-    denumerator = new QLineEdit("0", this);
-    denumerator->setGeometry(130, 50, 50, 25);
+    a_im = new QLineEdit("", this);
+    a_im->setGeometry(210, 20, 50, 25);
 
     output = new QLabel("тут будет вывод", this);
     output->setGeometry(50, 150, 100, 25);
 
-    submit_btn = new QPushButton("посчитать", this);
+    submit_btn = new QPushButton("добавить", this);
     submit_btn->setGeometry(190, 150, 70, 25);
     /* параметры - (указатель на источник сигнала, отслеживаемый сигнал,
      * указатель на приёмник (наше интерфейсное окно т.е. - this), слот который принимает)
     */
 
-    add_btn = new QPushButton("добавить", this);
-    add_btn->setGeometry(50, 200, 70, 25);
-
     connect(submit_btn, SIGNAL(pressed()), this, SLOT(submit()));
-    connect(add_btn, SIGNAL(pressed()), this, SLOT(add()));
 }
 
 TInterface::~TInterface() {
-    delete name_numerator;
-    delete name_denumerator;
-    delete numerator;
-    delete denumerator;
+    delete name_re;
+    delete name_im;
+    delete a_re;
+    delete a_im;
 
     delete submit_btn;
 }
 
-void TInterface::submit() {
-    QString numeratorValue = numerator->text();
-    QString denumeratorValue = denumerator->text();
+string TInterface::submit() {
+    QString reValue = a_re->text();
+    QString imValue = a_im->text();
 
     // Преобразование строк в целые числа
-    bool numOk, denumOk;
-    int num = numeratorValue.toInt(&numOk);
-    int denum = denumeratorValue.toInt(&denumOk);
+    bool reOk, imOk;
+    double re = reValue.toDouble(&reOk);
+    double im = imValue.toDouble(&imOk);
 
     // Проверка успешности преобразования
-    if (!numOk || !denumOk) {
+    if (!reOk || !imOk) {
         output->setText("Ошибка!");
-        return;
+        return "";
     }
 
     // Форматирование результата
-    QString result = QString::number(num) + " " + QString::number(denum);
+    QString result = QString::number(re) + " " + QString::number(im);
 
     // Установка текста в выходной элемент
-    output->setText(result);
-}
+    if (im < 0) {
+        output->setText(QString::number(re) + QString::number(im) + "i");
+    } else {
+        output->setText(QString::number(re) + "+" + QString::number(im) + "i");
+    }
 
-
-void TInterface::add() {
-    hz 4e tut
+    return result.toStdString();
 }

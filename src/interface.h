@@ -6,7 +6,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include "string"
-#include "number.h"
 
 using namespace std;
 
@@ -14,8 +13,8 @@ using namespace std;
 class TInterface : public QWidget{
     Q_OBJECT
 
-    QLabel *name_numerator, *name_denumerator, *output;
-    QLineEdit *numerator, *denumerator;
+    QLabel *name_re, *name_im, *output;
+    QLineEdit *a_re, *a_im;
 
     QPushButton *submit_btn, *add_btn;
 
@@ -23,9 +22,7 @@ class TInterface : public QWidget{
 public:
     TInterface(QWidget *parent = nullptr);
     ~TInterface();
-    number getNumber();
 public slots:
-    void submit();
-    void add();
+    string submit(); // Возвращает ввдённое к.ч. в виде строки
 };
 #endif // INTERFACE_H

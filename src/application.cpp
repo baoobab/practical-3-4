@@ -48,7 +48,7 @@ int TApplication::exec() {
             int addedCount = polynom.changeArrRootSize(size);
 
             if (addedCount > 0) {
-                for (int i = size - addedCount; i < size; i++) {
+                for (int i = size - addedCount; i < (int)size; i++) {
                     cout << "Enter root[" << i << "]: ";
                     cin >> item;
                     polynom.changeRootByIndex(i, item);
