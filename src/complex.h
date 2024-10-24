@@ -29,6 +29,7 @@ public:
     TComplex& operator+=(TComplex);
     TComplex& operator-=(TComplex);
     friend QString& operator<<(QString&, TComplex); // Новый метод, для вывода на интерфейс
+    friend QString& operator>>(QString&, TComplex&); // Новый метод, для ввода с интерфейса
     friend ostream& operator<<(ostream&, TComplex);
     friend istream& operator>>(istream&, TComplex&);
     friend TComplex pow(TComplex, int);

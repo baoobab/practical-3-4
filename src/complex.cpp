@@ -1,6 +1,8 @@
 #include "complex.h"
 #include "cmath"
 #include "QString"
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 TComplex::TComplex() {
 }
@@ -56,6 +58,31 @@ istream& operator>>(istream& is, TComplex& c) {
         c.im = imag;
     }
     return is;
+}
+
+QString& operator>>(QString& istr, TComplex& c) {
+    c.re = 0.0;
+    c.im = 0.0;
+
+    // Регулярное выражение для поиска чисел типа double
+    static const QRegularExpression regexp("[-+]?([0-9]*\\.?[0-9]+)"); // TODO: добавить обработку символа "i"
+
+    // Поиск первого вхождения числа
+    QRegularExpressionMatch match = regexp.match(istr);
+    if (match.hasMatch()) {
+        c.re = match.captured(0).toDouble();
+    } else {
+        return istr; // Если чисел нет вообще - выход
+    }
+
+    // Поиск следующего вхождения числа
+    int startPos = match.capturedStart() + match.capturedLength();
+    match = regexp.match(istr, startPos);
+    if (match.hasMatch()) {
+        c.im = match.captured(0).toDouble();
+    }
+
+    return istr;
 }
 
 TComplex pow(TComplex base, int exponent) {

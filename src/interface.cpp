@@ -4,6 +4,9 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QtDebug>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include "number.h"
 
 TInterface::TInterface(QWidget *parent)
     : QWidget(parent) {
@@ -102,10 +105,13 @@ void TInterface::showCanonicalForm() {
 }
 
 void TInterface::showClassicalForm() {
-
     // Реализация вывода классического вида полинома
-    QString buttonText = "Вывели классический вид типа";
-    outputField->setText(buttonText); //
+    QString outputText;
+
+    polynom->setPrintMode(EPrintMode::EPrintModeClassic);
+    outputText << *polynom;
+
+    outputField->setText(outputText);
 }
 
 void TInterface::changeRootsCount() {
@@ -127,8 +133,25 @@ void TInterface::calculateValueAtX() {
 
 void TInterface::setNewPolynomial() {
     // Реализация задания нового полинома вводом a_n и корней
-    QString buttonText = "Вывели новый полиномус";
-    outputField->setText(buttonText);
+    // number canonicCoef;
+    // QString outputText;
+
+    // dynamicInput->setPlaceholderText("Введите a_n (канон. коэф.)");
+    // QString diText = dynamicInput->text(); // TODO: подумать, мб получать из метода или после сигнала
+
+    // diText >> canonicCoef;
+
+    // polynom->flushMemory();
+    // polynom->setCanonicCoef(canonicCoef);
+
+    // dynamicInput->setPlaceholderText("Введите корни через пробел");
+    // // polynom.addRoot(item);
+    // // polynom.calcCoefFromRoots();
+    // outputText << *polynom;
+
+    // outputField->setText(outputText);
+
+    outputField->setText("Типо полиномчик, но нужно жоско подумать");
 }
 
 void TInterface::exitApplication() {
