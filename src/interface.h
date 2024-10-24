@@ -5,24 +5,29 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include "string"
+#include <QString>
+#include <vector>
+#include <string>
 
-using namespace std;
-
-
-class TInterface : public QWidget{
+class TInterface : public QWidget {
     Q_OBJECT
 
-    QLabel *name_re, *name_im, *output;
-    QLineEdit *a_re, *a_im;
-
-    QPushButton *submit_btn, *add_btn;
-
+    QLabel *output; // Метка для вывода результата
+    QLineEdit *dynamicInput; // Поле для ввода, изменяющееся в зависимости от нажатой кнопки
+    QPushButton *buttons[7]; // Массив кнопок
 
 public:
     TInterface(QWidget *parent = nullptr);
     ~TInterface();
+
 public slots:
-    string submit(); // Возвращает ввдённое к.ч. в виде строки
+    void showCanonicalForm(); // Вывод канонического вида полинома
+    void showClassicalForm(); // Вывод классического вида полинома
+    void changeRootsCount(); // Изменение кол-ва корней
+    void newANAndRoots(); // Новый a_n и корни
+    void calculateValueAtX(); // Вычислить значение в точке x
+    void setNewPolynomial(); // Задать новый полином вводом a_n и корней
+    void exitApplication(); // Выход из приложения
 };
+
 #endif // INTERFACE_H

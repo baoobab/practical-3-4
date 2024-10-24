@@ -1,71 +1,81 @@
 #include "interface.h"
-#include "string"
-
-using namespace std;
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QApplication>
 
 TInterface::TInterface(QWidget *parent)
-    : QWidget(parent)
-{
-    setWindowTitle("Работа №4");
-    setFixedSize(400, 350);
+    : QWidget(parent) {
 
-    name_re = new QLabel("Комл. число", this);
-    name_re->setGeometry(50, 20, 70, 25); // параметры - (X верх.лев.угла px, Y верх.лев.угла px, ширина px, высота px)
+    setWindowTitle("Многочлен на комплексных числах");
+    setFixedSize(400, 300);
 
-    a_re = new QLineEdit("", this);
-    a_re->setGeometry(130, 20, 50, 25);
+    output = new QLabel("Результат:", this);
 
-    name_im = new QLabel("+i", this);
-    name_im->setGeometry(190, 20, 70 ,25);
+    dynamicInput = new QLineEdit(this); // Поле для динамического ввода
+    dynamicInput->setPlaceholderText("Введите данные..."); // Подсказка для пользователя
 
-    a_im = new QLineEdit("", this);
-    a_im->setGeometry(210, 20, 50, 25);
+    buttons[0] = new QPushButton("Вывод канонического вида полинома", this);
+    buttons[1] = new QPushButton("Вывод классического вида полинома", this);
+    buttons[2] = new QPushButton("Изменение кол-ва корней", this);
+    buttons[3] = new QPushButton("Изменить a_n и корни", this);
+    buttons[4] = new QPushButton("Вычислить значение в точке x", this);
+    buttons[5] = new QPushButton("Задать новый полином", this);
+    buttons[6] = new QPushButton("Выход", this); // Кнопка "Выход"
 
-    output = new QLabel("тут будет вывод", this);
-    output->setGeometry(50, 150, 100, 25);
+    QVBoxLayout *layout = new QVBoxLayout(this);
 
-    submit_btn = new QPushButton("добавить", this);
-    submit_btn->setGeometry(190, 150, 70, 25);
-    /* параметры - (указатель на источник сигнала, отслеживаемый сигнал,
-     * указатель на приёмник (наше интерфейсное окно т.е. - this), слот который принимает)
-    */
+    layout->addWidget(output);
 
-    connect(submit_btn, SIGNAL(pressed()), this, SLOT(submit()));
+    layout->addWidget(new QLabel("Поле ввода:"));
+    layout->addWidget(dynamicInput); // Динамическое поле ввода
+
+    for (int i = 0; i < 7; ++i) {
+        layout->addWidget(buttons[i]); // Добавляем кнопки
+        connect(buttons[i], &QPushButton::clicked, this, [this, i]() {
+            QString buttonText = buttons[i]->text(); // Получаем текст кнопки
+            dynamicInput->setPlaceholderText(buttonText); // Устанавливаем текст подсказки
+
+            switch (i) { // Индекс для обработки нажатий
+                case 0: showCanonicalForm(); break; // Вывод канонического вида полинома
+                case 1: showClassicalForm(); break; // Вывод классического вида полинома
+                case 2: changeRootsCount(); break; // Изменение кол-ва корней
+                case 3: newANAndRoots(); break; // Новый a_n и корни
+                case 4: calculateValueAtX(); break; // Вычислить значение в точке x
+                case 5: setNewPolynomial(); break; // Задать новый полином
+                case 6: exitApplication(); break; // Выход из программы
+            }
+        });
+    }
 }
 
 TInterface::~TInterface() {
-    delete name_re;
-    delete name_im;
-    delete a_re;
-    delete a_im;
-
-    delete submit_btn;
 }
 
-string TInterface::submit() {
-    QString reValue = a_re->text();
-    QString imValue = a_im->text();
+void TInterface::showCanonicalForm() {
+    // Реализация вывода канонического вида полинома
+}
 
-    // Преобразование строк в целые числа
-    bool reOk, imOk;
-    double re = reValue.toDouble(&reOk);
-    double im = imValue.toDouble(&imOk);
+void TInterface::showClassicalForm() {
+    // Реализация вывода классического вида полинома
+}
 
-    // Проверка успешности преобразования
-    if (!reOk || !imOk) {
-        output->setText("Ошибка!");
-        return "";
-    }
+void TInterface::changeRootsCount() {
+    // Реализация изменения количества корней
+}
 
-    // Форматирование результата
-    QString result = QString::number(re) + " " + QString::number(im);
+void TInterface::newANAndRoots() {
+    // Реализация нового a_n и корни
+}
 
-    // Установка текста в выходной элемент
-    if (im < 0) {
-        output->setText(QString::number(re) + QString::number(im) + "i");
-    } else {
-        output->setText(QString::number(re) + "+" + QString::number(im) + "i");
-    }
+void TInterface::calculateValueAtX() {
+    // Реализация вычисления значения в точке x
+}
 
-    return result.toStdString();
+void TInterface::setNewPolynomial() {
+    // Реализация задания нового полинома вводом a_n и корней
+}
+
+void TInterface::exitApplication() {
+    QApplication::quit();
 }
