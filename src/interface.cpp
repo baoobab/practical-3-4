@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QApplication>
+#include <QtDebug>
 
 TInterface::TInterface(QWidget *parent)
     : QWidget(parent) {
@@ -10,7 +11,12 @@ TInterface::TInterface(QWidget *parent)
     setWindowTitle("Многочлен на комплексных числах");
     setFixedSize(400, 300);
 
-    output = new QLabel("Результат:", this);
+    // Создаём метку и поле вывода
+    outputLabel = new QLabel("Результат:", this);
+    outputField = new QLineEdit(this); // Поле вывода в одну строку
+    outputField->setReadOnly(true); // Делаем поле вывода только для чтения
+    outputField->setPlaceholderText("Результат будет здесь..."); // Подсказка для пользователя
+    outputField->setMaximumWidth(350); // Ограничиваем ширину поля вывода
 
     dynamicInput = new QLineEdit(this); // Поле для динамического ввода
     dynamicInput->setPlaceholderText("Введите данные..."); // Подсказка для пользователя
@@ -23,12 +29,30 @@ TInterface::TInterface(QWidget *parent)
     buttons[5] = new QPushButton("Задать новый полином", this);
     buttons[6] = new QPushButton("Выход", this); // Кнопка "Выход"
 
+    QPushButton *inputButton = new QPushButton("Ввод", this); // Кнопка ввода
+    QPushButton *clearButton = new QPushButton("Очистить", this); // Кнопка для очистки поля вывода
+
+
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    layout->addWidget(output);
+    layout->addWidget(outputLabel);
+
+    // Создаем горизонтальный макет для метки и поля вывода
+    QHBoxLayout *outputLayout = new QHBoxLayout();
+
+    outputField->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // Растягиваем поле по ширине
+    outputLayout->addWidget(outputField); // Добавляем поле вывода
+    outputLayout->addWidget(clearButton); // Добавляем кнопку "Очистить"
+    layout->addLayout(outputLayout); // Добавляем горизонтальный макет в основной макет
 
     layout->addWidget(new QLabel("Поле ввода:"));
-    layout->addWidget(dynamicInput); // Динамическое поле ввода
+
+    // Создаем горизонтальный макет для поля ввода и кнопки "Ввод"
+    QHBoxLayout *inputLayout = new QHBoxLayout();
+    inputLayout->addWidget(dynamicInput); // Добавляем поле ввода
+    inputLayout->addWidget(inputButton); // Добавляем кнопку "Ввод"
+
+    layout->addLayout(inputLayout); // Добавляем горизонтальный макет в основной макет
 
     for (int i = 0; i < 7; ++i) {
         layout->addWidget(buttons[i]); // Добавляем кнопки
@@ -47,35 +71,74 @@ TInterface::TInterface(QWidget *parent)
             }
         });
     }
+    connect(inputButton, &QPushButton::clicked, this, &TInterface::handleInput);
+    connect(clearButton, &QPushButton::clicked, this, &TInterface::clearOutput); // Подключаем кнопку "Очистить"
 }
 
 TInterface::~TInterface() {
 }
 
+void TInterface::clearOutput() {
+   outputField->clear(); // Очищаем поле вывода при нажатии на кнопку "Очистить"
+}
+
+
 void TInterface::showCanonicalForm() {
+
     // Реализация вывода канонического вида полинома
+    QString buttonText = "Вывели какнонический вид типа";
+    outputField->setText(buttonText); //
 }
 
 void TInterface::showClassicalForm() {
+
     // Реализация вывода классического вида полинома
+    QString buttonText = "Вывели классический вид типа";
+    outputField->setText(buttonText); //
 }
 
 void TInterface::changeRootsCount() {
     // Реализация изменения количества корней
+    QString buttonText = "Вывели новый полином idk";
+    outputField->setText(buttonText);
 }
 
 void TInterface::newANAndRoots() {
     // Реализация нового a_n и корни
+    QString buttonText = "Вывели новый полином idk";
+    outputField->setText(buttonText);
 }
 
 void TInterface::calculateValueAtX() {
     // Реализация вычисления значения в точке x
+    QString buttonText = "Вывели p(x) = value";
+    outputField->setText(buttonText);
 }
 
 void TInterface::setNewPolynomial() {
     // Реализация задания нового полинома вводом a_n и корней
+    QString buttonText = "Вывели новый полиномус";
+    outputField->setText(buttonText);
 }
 
 void TInterface::exitApplication() {
     QApplication::quit();
 }
+
+// Новый слот для обработки ввода данных из поля ввода
+void TInterface::handleInput() {
+    QString inputText = dynamicInput->text();
+
+    if (!inputText.isEmpty()) {
+        outputField->setText("Введено: " + inputText);
+        dynamicInput->clear(); // Очищаем поле после ввода (по желанию)
+
+        qDebug() << "Введенные данные:" << inputText;
+
+        // Здесь можно добавить дополнительную логику обработки введённых данных.
+
+    } else {
+        outputField->setText("Поле ввода пустое!");
+    }
+}
+
