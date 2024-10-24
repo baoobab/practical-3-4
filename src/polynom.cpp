@@ -2,6 +2,7 @@
 #include <iostream>
 #include <array.h>
 #include <math.h>
+#include "QString"
 
 using namespace std;
 
@@ -69,6 +70,43 @@ ostream& operator<<(ostream& os, TPolynom& polynom) {
     return os;
 }
 
+QString& operator<<(QString& s, TPolynom& polynom) {
+    s += "P(x) = ";
+
+    if (!polynom.arrRoot->getSize()) {
+        s << polynom.canonicCoef;
+        return s;
+    }
+
+    if (polynom.printMode == EPrintMode::EPrintModeCanonical) {
+        for (unsigned i = 0; i < polynom.arrCoef->getSize() - 1; i++) {
+            int pow = (polynom.arrCoef->getSize() - i - 1);
+            s << polynom.arrCoef->get(i);
+            if (pow != 0) s += "x";
+            if (pow > 1) {
+                s += "^";
+                s += QString().setNum(pow);
+            }
+            s += " + ";
+        }
+        s << polynom.arrCoef->get(polynom.arrCoef->getSize() - 1);
+
+    } else {
+        s << polynom.canonicCoef;
+        for (unsigned i = 0; i < polynom.arrRoot->getSize(); ++i)
+        {
+            s += "(x - ";
+            s << polynom.arrRoot->get(i);
+            s += ")";
+        }
+
+    }
+
+    // s += " "; // проверить - нужен ли
+
+    return s;
+}
+
 void TPolynom::flushMemory() {
     this->arrCoef->flushMemory();
     this->arrRoot->flushMemory();
@@ -102,13 +140,13 @@ void TPolynom::calcCoefFromRoots() {
     }
 
     // Умножаем на канонический коэффициент
-    for (int i = 0; i < classicalCoeffs.getSize(); i++) {
+    for (int i = 0; i < (int)classicalCoeffs.getSize(); i++) {
         classicalCoeffs.replaceElement(i, classicalCoeffs.get(i) * this->canonicCoef);
     }
 
     // Сохраняем классические коэффициенты
     this->arrCoef->flushMemory();
-    for (int i = 0; i < classicalCoeffs.getSize(); i++) {
+    for (int i = 0; i < (int)classicalCoeffs.getSize(); i++) {
         this->arrCoef->appendElement(classicalCoeffs.get(i));
     }
 

@@ -9,16 +9,19 @@
 #include <vector>
 #include <string>
 #include <QTextEdit>
+#include "polynom.h"
 
 class TInterface : public QWidget {
     Q_OBJECT
 
+    static const int buttonsCount = 7; // Общее количество кнопок в интерфейсе
+
     QLabel *outputLabel; // Метка для результата
     QLineEdit *outputField; // Поле вывода с горизонтальной прокруткой
     QLineEdit *dynamicInput; // Поле для ввода, изменяющееся в зависимости от нажатой кнопки
-    QPushButton *buttons[7]; // Массив кнопок
+    QPushButton *buttons[buttonsCount]; // Массив кнопок
 
-
+    TPolynom *polynom; // Полином для работы с интерфесом
 public:
     TInterface(QWidget *parent = nullptr);
     ~TInterface();

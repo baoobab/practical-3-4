@@ -1,5 +1,6 @@
 #include "complex.h"
 #include "cmath"
+#include "QString"
 
 TComplex::TComplex() {
 }
@@ -29,6 +30,23 @@ ostream& operator<<(ostream& os, TComplex c) {
     os << ")";
 
     return os;
+}
+
+QString& operator<<(QString& s, TComplex c) {
+    s += "(";
+    if (c.im < 0) {
+        s += QString().setNum(c.re);
+        s += QString().setNum(c.im);
+    }
+    else {
+        s += QString().setNum(c.re);
+        s += "+";
+        s += QString().setNum(c.im);
+    }
+    s += "i";
+    s += ")";
+
+    return s;
 }
 
 istream& operator>>(istream& is, TComplex& c) {

@@ -3,6 +3,7 @@
 
 #include <number.h>
 #include <array.h>
+#include "QString"
 
 enum EPrintMode {
     EPrintModeClassic,
@@ -26,6 +27,7 @@ public:
     void setCanonicCoef(number coef);
     number value(number val);
     friend ostream& operator<<(ostream&, TPolynom&);
+    friend QString& operator<<(QString&, TPolynom&); // Новый метод, для вывода на интерфейс
     void calcCoefFromRoots();
     int changeArrRootSize(unsigned newSize); // Возврщает int - кол-во добавленных эл-тов
     void changeRootByIndex(unsigned index, number newRoot);

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "cmath"
+#include "QString"
 using namespace std;
 
 class TComplex {
@@ -27,6 +28,7 @@ public:
     TComplex operator-(TComplex); // бинарный минус
     TComplex& operator+=(TComplex);
     TComplex& operator-=(TComplex);
+    friend QString& operator<<(QString&, TComplex); // Новый метод, для вывода на интерфейс
     friend ostream& operator<<(ostream&, TComplex);
     friend istream& operator>>(istream&, TComplex&);
     friend TComplex pow(TComplex, int);

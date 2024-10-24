@@ -11,6 +11,9 @@ TInterface::TInterface(QWidget *parent)
     setWindowTitle("Многочлен на комплексных числах");
     setFixedSize(400, 300);
 
+    // Создаем пустой полином
+    polynom = new TPolynom();
+
     // Создаём метку и поле вывода
     outputLabel = new QLabel("Результат:", this);
     outputField = new QLineEdit(this); // Поле вывода в одну строку
@@ -76,6 +79,14 @@ TInterface::TInterface(QWidget *parent)
 }
 
 TInterface::~TInterface() {
+    delete outputLabel;
+    delete outputField;
+    delete dynamicInput;
+    // delete[] buttons;
+    for (int i = 0; i < buttonsCount; i++) {
+        delete buttons[i];
+    }
+    delete polynom;
 }
 
 void TInterface::clearOutput() {
@@ -111,8 +122,7 @@ void TInterface::newANAndRoots() {
 
 void TInterface::calculateValueAtX() {
     // Реализация вычисления значения в точке x
-    QString buttonText = "Вывели p(x) = value";
-    outputField->setText(buttonText);
+    outputField->setText("Вывели p(x) = value");
 }
 
 void TInterface::setNewPolynomial() {
