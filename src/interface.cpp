@@ -35,7 +35,7 @@ TInterface::TInterface(QWidget *parent)
     buttons[5] = new QPushButton("Задать новый полином", this);
     buttons[6] = new QPushButton("Выход", this); // Кнопка "Выход"
 
-    QPushButton *inputButton = new QPushButton("Ввод", this); // Кнопка ввода
+    QPushButton *inputButton = new QPushButton("Подтвердить", this); // upd: Теперь это кнопка подтверждения действия (и ввода в том числе)
     QPushButton *clearButton = new QPushButton("Очистить", this); // Кнопка для очистки поля вывода
 
 
@@ -60,6 +60,10 @@ TInterface::TInterface(QWidget *parent)
 
     layout->addLayout(inputLayout); // Добавляем горизонтальный макет в основной макет
 
+
+    // Добавляем переменную для хранения текущего действия
+    currentAction = EAction::None;
+
     for (int i = 0; i < 7; ++i) {
         layout->addWidget(buttons[i]); // Добавляем кнопки
         connect(buttons[i], &QPushButton::clicked, this, [this, i]() {
@@ -67,18 +71,20 @@ TInterface::TInterface(QWidget *parent)
             dynamicInput->setPlaceholderText(buttonText); // Устанавливаем текст подсказки
 
             switch (i) { // Индекс для обработки нажатий
-                case 0: showCanonicalForm(); break; // Вывод канонического вида полинома
-                case 1: showClassicalForm(); break; // Вывод классического вида полинома
-                case 2: changeRootsCount(); break; // Изменение кол-ва корней
-                case 3: newANAndRoots(); break; // Новый a_n и корни
-                case 4: calculateValueAtX(); break; // Вычислить значение в точке x
-                case 5: setNewPolynomial(); break; // Задать новый полином
-                case 6: exitApplication(); break; // Выход из программы
+            case 0: currentAction = EAction::ShowCanonicalForm; break;
+            case 1: currentAction = EAction::ShowClassicalForm; break;
+            case 2: currentAction = EAction::ChangeRootsCount; break;
+            case 3: currentAction = EAction::NewANAndRoots; break;
+            case 4: currentAction = EAction::CalculateValueAtX; break;
+            case 5: currentAction = EAction::SetNewPolynomial; break;
+            case 6: currentAction = EAction::ExitApplication; break;
             }
         });
     }
-    connect(inputButton, &QPushButton::clicked, this, &TInterface::handleInput);
+
+    connect(inputButton, &QPushButton::clicked, this, &TInterface::handleInputAndPerformAction);
     connect(clearButton, &QPushButton::clicked, this, &TInterface::clearOutput); // Подключаем кнопку "Очистить"
+
 }
 
 TInterface::~TInterface() {
@@ -98,60 +104,44 @@ void TInterface::clearOutput() {
 
 
 void TInterface::showCanonicalForm() {
-
-    // Реализация вывода канонического вида полинома
     QString buttonText = "Вывели какнонический вид типа";
-    outputField->setText(buttonText); //
+    outputField->setText(buttonText);
+
+    currentAction = EAction::None; // Сбрасываем текущее действие
 }
 
 void TInterface::showClassicalForm() {
-    // Реализация вывода классического вида полинома
     QString outputText;
 
     polynom->setPrintMode(EPrintMode::EPrintModeClassic);
     outputText << *polynom;
 
     outputField->setText(outputText);
+
+    currentAction = EAction::None; // Сбрасываем текущее действие
 }
 
 void TInterface::changeRootsCount() {
     // Реализация изменения количества корней
     QString buttonText = "Вывели новый полином idk";
     outputField->setText(buttonText);
+
+    currentAction = EAction::None; // Сбрасываем текущее действие
 }
 
 void TInterface::newANAndRoots() {
     // Реализация нового a_n и корни
     QString buttonText = "Вывели новый полином idk";
     outputField->setText(buttonText);
+
+    currentAction = EAction::None; // Сбрасываем текущее действие
 }
 
 void TInterface::calculateValueAtX() {
     // Реализация вычисления значения в точке x
     outputField->setText("Вывели p(x) = value");
-}
 
-void TInterface::setNewPolynomial() {
-    // Реализация задания нового полинома вводом a_n и корней
-    // number canonicCoef;
-    // QString outputText;
-
-    // dynamicInput->setPlaceholderText("Введите a_n (канон. коэф.)");
-    // QString diText = dynamicInput->text(); // TODO: подумать, мб получать из метода или после сигнала
-
-    // diText >> canonicCoef;
-
-    // polynom->flushMemory();
-    // polynom->setCanonicCoef(canonicCoef);
-
-    // dynamicInput->setPlaceholderText("Введите корни через пробел");
-    // // polynom.addRoot(item);
-    // // polynom.calcCoefFromRoots();
-    // outputText << *polynom;
-
-    // outputField->setText(outputText);
-
-    outputField->setText("Типо полиномчик, но нужно жоско подумать");
+    currentAction = EAction::None; // Сбрасываем текущее действие
 }
 
 void TInterface::exitApplication() {
@@ -159,19 +149,96 @@ void TInterface::exitApplication() {
 }
 
 // Новый слот для обработки ввода данных из поля ввода
-void TInterface::handleInput() {
+QString TInterface::handleInput() {
     QString inputText = dynamicInput->text();
 
     if (!inputText.isEmpty()) {
-        outputField->setText("Введено: " + inputText);
+        // outputField->setText("Введено: " + inputText);
         dynamicInput->clear(); // Очищаем поле после ввода (по желанию)
-
         qDebug() << "Введенные данные:" << inputText;
 
-        // Здесь можно добавить дополнительную логику обработки введённых данных.
+        return inputText;
+    } else {
+        outputField->setText("Поле ввода пустое!");
+        return "";
+    }
+}
 
+// Обновлённый метод setNewPolynomial для принятия ввода от пользователя
+void TInterface::setNewPolynomial(QString& inputText) {
+
+    if (inputText.length() > 0) {
+        number numInput; // Введённые данные в числовом представлении
+        QString outputText; // Результирующая строка
+        inputText >> numInput;
+
+        polynom->flushMemory();
+        polynom->setCanonicCoef(numInput);
+
+        outputText << *polynom;
+        outputField->setText(outputText);
+
+        dynamicInput->setPlaceholderText("Введите корень");
+        currentAction = EAction::SetNewPolynomialRoot; // Сбрасываем текущее действие
     } else {
         outputField->setText("Поле ввода пустое!");
     }
 }
 
+// Добавляем новое действие для ввода корня
+void TInterface::handleInputAndPerformActionForRoot(QString& inputText) {
+
+    if (inputText.length() > 0) {
+        number numInput;
+        QString outputText;
+
+        inputText >> numInput;
+
+        polynom->addRoot(numInput);
+        polynom->calcCoefFromRoots();
+
+        outputText << *polynom;
+        outputField->setText(outputText);
+        currentAction = EAction::SetNewPolynomialRoot; // Сбрасываем текущее действие
+    } else {
+        outputField->setText("Поле ввода пустое!");
+    }
+
+    // currentAction = EAction::None; // Не сбрасываем, чтобы корни можно было добавлять сколько угодно
+}
+
+// Новый слот для обработки ввода данных и выполнения действия
+void TInterface::handleInputAndPerformAction() {
+    QString inputText = handleInput();
+
+    switch (currentAction) {
+    case EAction::ShowCanonicalForm:
+        showCanonicalForm();
+        break;
+    case EAction::ShowClassicalForm:
+        showClassicalForm();
+        break;
+    case EAction::ChangeRootsCount:
+        changeRootsCount();
+        break;
+    case EAction::NewANAndRoots:
+        newANAndRoots();
+        break;
+    case EAction::CalculateValueAtX:
+        calculateValueAtX();
+        break;
+    case EAction::SetNewPolynomial:
+        setNewPolynomial(inputText);
+        break;
+    case EAction::SetNewPolynomialRoot:
+        handleInputAndPerformActionForRoot(inputText);
+        break;
+    case EAction::ExitApplication:
+        exitApplication();
+        break;
+    default:
+        break;
+    }
+
+    // currentAction = EAction::None; // Сбрасываем в каждом методе, чтобы можно было строить цепочки событий
+}

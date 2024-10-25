@@ -65,7 +65,8 @@ QString& operator>>(QString& istr, TComplex& c) {
     c.im = 0.0;
 
     // Регулярное выражение для поиска чисел типа double
-    static const QRegularExpression regexp("[-+]?([0-9]*\\.?[0-9]+)"); // TODO: добавить обработку символа "i"
+    static const QRegularExpression regexp("([-+]?[0-9]*\\.?[0-9]+)(?:\\s*([+-]?[0-9]*\\.?[0-9]+)i)?");
+    // TODO: проверить обработку символа "i" и знака с пробелом
 
     // Поиск первого вхождения числа
     QRegularExpressionMatch match = regexp.match(istr);

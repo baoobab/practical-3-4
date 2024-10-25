@@ -11,6 +11,19 @@
 #include <QTextEdit>
 #include "polynom.h"
 
+// Enum для хранения текущего действия
+enum class EAction {
+    None,
+    ShowCanonicalForm,
+    ShowClassicalForm,
+    ChangeRootsCount,
+    NewANAndRoots,
+    CalculateValueAtX,
+    SetNewPolynomial,
+    SetNewPolynomialRoot,
+    ExitApplication
+};
+
 class TInterface : public QWidget {
     Q_OBJECT
 
@@ -22,19 +35,22 @@ class TInterface : public QWidget {
     QPushButton *buttons[buttonsCount]; // Массив кнопок
 
     TPolynom *polynom; // Полином для работы с интерфесом
+    EAction currentAction = EAction::None;
 public:
     TInterface(QWidget *parent = nullptr);
     ~TInterface();
 
 public slots:
+    void handleInputAndPerformActionForRoot(QString& inputText); // Новое действие для ввода корня
+    void handleInputAndPerformAction(); // Новый слот для обработки ввода данных и выполнения действия
     void showCanonicalForm(); // Вывод канонического вида полинома
     void showClassicalForm(); // Вывод классического вида полинома
     void changeRootsCount(); // Изменение кол-ва корней
     void newANAndRoots(); // Новый a_n и корни
     void calculateValueAtX(); // Вычислить значение в точке x
-    void setNewPolynomial(); // Задать новый полином вводом a_n и корней
+    void setNewPolynomial(QString& inputText); // Задать новый полином вводом a_n и корней
     void exitApplication(); // Выход из приложения
-    void handleInput();
+    QString handleInput();
     void clearOutput();
 };
 
