@@ -41,17 +41,18 @@ public:
     ~TInterface();
 
 public slots:
-    void handleInputAndPerformActionForRoot(QString& inputText); // Новое действие для ввода корня
-    void handleInputAndPerformAction(); // Новый слот для обработки ввода данных и выполнения действия
-    void showCanonicalForm(); // Вывод канонического вида полинома
-    void showClassicalForm(); // Вывод классического вида полинома
-    void changeRootsCount(); // Изменение кол-ва корней
-    void newANAndRoots(); // Новый a_n и корни
-    void calculateValueAtX(QString& inputText); // Вычислить значение в точке x
-    void setNewPolynomial(QString& inputText); // Задать новый полином вводом a_n и корней
+    // void handleInputAndPerformActionForRoot(QString& inputText); // Новое действие для ввода корня
+    // void handleInputAndPerformAction(); // Новый слот для обработки ввода данных и выполнения действия
+    // void showCanonicalForm(); // Вывод канонического вида полинома
+    // void showClassicalForm(); // Вывод классического вида полинома
+    // void changeRootsCount(); // Изменение кол-ва корней
+    // void newANAndRoots(); // Новый a_n и корни
+    // void calculateValueAtX(QString& inputText); // Вычислить значение в точке x
+    // void setNewPolynomial(QString& inputText); // Задать новый полином вводом a_n и корней
     void exitApplication(); // Выход из приложения
-    QString handleInput();
+    // QString handleInput();
     void clearOutput();
+    void handleSetNewPolynomial(QString& anText, QString& rootsText);
 };
 
 #endif // INTERFACE_H
