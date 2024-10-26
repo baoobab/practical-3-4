@@ -64,7 +64,7 @@ TInterface::TInterface(QWidget *parent)
     // Добавляем переменную для хранения текущего действия
     currentAction = EAction::None;
 
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < buttonsCount; ++i) {
         layout->addWidget(buttons[i]); // Добавляем кнопки
         connect(buttons[i], &QPushButton::clicked, this, [this, i]() {
             QString buttonText = buttons[i]->text(); // Получаем текст кнопки
@@ -104,8 +104,12 @@ void TInterface::clearOutput() {
 
 
 void TInterface::showCanonicalForm() {
-    QString buttonText = "Вывели какнонический вид типа";
-    outputField->setText(buttonText);
+    QString outputText;
+
+    polynom->setPrintMode(EPrintMode::EPrintModeCanonical);
+    outputText << *polynom;
+
+    outputField->setText(outputText);
 
     currentAction = EAction::None; // Сбрасываем текущее действие
 }
@@ -131,15 +135,21 @@ void TInterface::changeRootsCount() {
 
 void TInterface::newANAndRoots() {
     // Реализация нового a_n и корни
-    QString buttonText = "Вывели новый полином idk";
-    outputField->setText(buttonText);
 
     currentAction = EAction::None; // Сбрасываем текущее действие
 }
 
-void TInterface::calculateValueAtX() {
+void TInterface::calculateValueAtX(QString& inputText) {
     // Реализация вычисления значения в точке x
-    outputField->setText("Вывели p(x) = value");
+    QString outputText;
+    number x;
+    inputText >> x;
+    number value = polynom->value(x);
+
+    outputText << value;
+
+    outputField->setText(outputText);
+
 
     currentAction = EAction::None; // Сбрасываем текущее действие
 }
@@ -225,7 +235,7 @@ void TInterface::handleInputAndPerformAction() {
         newANAndRoots();
         break;
     case EAction::CalculateValueAtX:
-        calculateValueAtX();
+        calculateValueAtX(inputText);
         break;
     case EAction::SetNewPolynomial:
         setNewPolynomial(inputText);

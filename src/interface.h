@@ -47,7 +47,7 @@ public slots:
     void showClassicalForm(); // Вывод классического вида полинома
     void changeRootsCount(); // Изменение кол-ва корней
     void newANAndRoots(); // Новый a_n и корни
-    void calculateValueAtX(); // Вычислить значение в точке x
+    void calculateValueAtX(QString& inputText); // Вычислить значение в точке x
     void setNewPolynomial(QString& inputText); // Задать новый полином вводом a_n и корней
     void exitApplication(); // Выход из приложения
     QString handleInput();
