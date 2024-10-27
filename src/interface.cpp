@@ -1,4 +1,4 @@
-#include "interface.h"
+﻿#include "interface.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -57,6 +57,7 @@ TInterface::TInterface(QWidget *parent)
     // Пункт 3: Изменение количества корней
     QLabel *changeRootsCountLabel = new QLabel("Изменение количества корней", this);
     QLineEdit *changeRootsCountInput = new QLineEdit(this);
+    changeRootsCountInput->setPlaceholderText("Новое количество корней");
     QPushButton *changeRootsCountButton = new QPushButton("Изменить", this);
     connect(changeRootsCountButton, &QPushButton::clicked, this, [this, changeRootsCountInput]() {
         QString inputText = changeRootsCountInput->text();
@@ -176,9 +177,103 @@ void TInterface::showClassicalForm()
 
 void TInterface::changeRootsCount(QString& inputText)
 {
-    // Реализация изменения количества корней
-    // Для начала, просто выводим сообщение
-    QMessageBox::information(this, "Изменение количества корней", "Не реализовано");
+    QString outputText; // Результирующая строка
+    bool ok;
+    int size = inputText.toInt(&ok);
+    QString infoText;
+
+    if (!ok || size <= 0)
+    {
+        QMessageBox::critical(this, "Ошибка", "Некорректный размер нового массива");
+        return;
+    }
+
+    // Создаем диалоговое окно для изменения размера массива
+    QDialog* dialog = new QDialog(this);
+    dialog->setWindowTitle("Изменить количество корней");
+
+    // Метка и readonly поле для старого полинома
+    QLabel* oldRootLabel = new QLabel("Текущий полином (нумерация корней с нуля):", dialog);
+    QLineEdit* oldRootField = new QLineEdit(dialog);
+
+    infoText << *polynom;
+    oldRootField->setText(infoText);
+    oldRootField->setReadOnly(true);
+
+    int addedCount = polynom->changeArrRootSize(size); // меняем размер массива корней
+
+    QString newRootLabelText = "Введите " + QString::number(addedCount) + " Новых корней (через пробел): "  ;
+    QLabel* newRootLabel = new QLabel(newRootLabelText, dialog);
+    QLineEdit* newRootInput = new QLineEdit(dialog);
+
+    // Кнопка подтверждения
+    QPushButton* confirmButton = new QPushButton("Подтвердить", dialog);
+    connect(confirmButton, &QPushButton::clicked, dialog, &QDialog::accept);
+
+    // Макет для диалогового окна
+    QVBoxLayout* dialogLayout = new QVBoxLayout();
+    dialogLayout->addWidget(oldRootLabel);
+    dialogLayout->addWidget(oldRootField);
+    dialogLayout->addWidget(newRootLabel);
+    dialogLayout->addWidget(newRootInput);
+    dialogLayout->addWidget(confirmButton);
+    dialog->setLayout(dialogLayout);
+
+    // если размер массива уменьшился
+    if (addedCount < 0)
+    {
+        clearOutput();
+        outputText.clear();
+        outputText << *polynom;
+        outputField->setText(outputText);
+        QMessageBox::information(this, "Успех", "Массив изменён успешно");
+        return;
+    }
+    // если размер массива не изменился
+    if (addedCount == 0)
+    {
+        QMessageBox::information(this, "Нет изменений", "Массив останется того же размера");
+        return;
+    }
+    // Показываем диалоговое окно и ждем подтверждения
+    if (dialog->exec() == QDialog::Accepted)
+    {
+        QStringList rootsList = newRootInput->text().split(' '); // Разделяем строку на части по пробелу
+        if (rootsList.size() != addedCount * 2)
+        {
+            QMessageBox::critical(this, "Ошибка", "Количество введенных корней не соответсвует необходимому, полиному будет установлено значение по умолчанию");
+            polynom->flushMemory();
+            return;
+        }
+        QString arr[rootsList.size()];
+        int iter = 0;
+        for (const QString &item : rootsList)
+        {
+            arr[iter] = item;
+            iter++;
+        }
+        // если массив увеличился
+        for (int i = size - addedCount, j = 0; i < size; ++i, ++j)
+        {
+            number item;
+            QString concaetedNum;
+            concaetedNum = arr[j] + " " + arr[j+1];
+
+            concaetedNum >> item;
+            polynom->changeRootByIndex(i, item);
+        }
+        polynom->calcCoefFromRoots();
+
+        QMessageBox::information(this, "Успех", "Массив изменён успешно");
+
+    }
+
+    delete dialog;
+    clearOutput();
+    outputText.clear();
+    outputText << *polynom;
+    outputField->setText(outputText);
+
 }
 
 void TInterface::changeRootAndAN(QString& anText, QString& indexText)
