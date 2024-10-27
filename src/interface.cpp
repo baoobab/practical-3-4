@@ -12,7 +12,6 @@ TInterface::TInterface(QWidget *parent)
     : QWidget(parent)
 {
     setWindowTitle("Многочлен на комплексных числах");
-    // setFixedSize(400, 400); // Увеличена высота окна для размещения всех полей
     setMaximumSize(600, 300);
 
     // Создаем пустой полином
@@ -21,7 +20,7 @@ TInterface::TInterface(QWidget *parent)
     // Создаём метку и поле вывода
     outputField = new QLineEdit(this); // Поле вывода в одну строку
     outputField->setReadOnly(true); // Делаем поле вывода только для чтения
-    outputField->setPlaceholderText("Результат будет здесь..."); // Подсказка для пользователя
+    outputField->setPlaceholderText("Результат любого пункта будет здесь..."); // Подсказка для пользователя
     outputField->setMaximumWidth(350); // Ограничиваем ширину поля вывода
 
     // Кнопка "Очистить"
@@ -40,7 +39,7 @@ TInterface::TInterface(QWidget *parent)
     // Пункт 1: Вывод канонического вида полинома
     QLabel *canonicalFormLabel = new QLabel("Вывод канонического вида полинома", this);
     QPushButton *canonicalFormButton = new QPushButton("Вывести", this);
-    // connect(canonicalFormButton, &QPushButton::clicked, this, &TInterface::showCanonicalForm);
+    connect(canonicalFormButton, &QPushButton::clicked, this, &TInterface::showCanonicalForm);
     QHBoxLayout *canonicalFormLayout = new QHBoxLayout();
     canonicalFormLayout->addWidget(canonicalFormLabel);
     canonicalFormLayout->addWidget(canonicalFormButton);
@@ -49,7 +48,7 @@ TInterface::TInterface(QWidget *parent)
     // Пункт 2: Вывод классического вида полинома
     QLabel *classicalFormLabel = new QLabel("Вывод классического вида полинома", this);
     QPushButton *classicalFormButton = new QPushButton("Вывести", this);
-    // connect(classicalFormButton, &QPushButton::clicked, this, &TInterface::showClassicalForm);
+    connect(classicalFormButton, &QPushButton::clicked, this, &TInterface::showClassicalForm);
     QHBoxLayout *classicalFormLayout = new QHBoxLayout();
     classicalFormLayout->addWidget(classicalFormLabel);
     classicalFormLayout->addWidget(classicalFormButton);
@@ -59,10 +58,10 @@ TInterface::TInterface(QWidget *parent)
     QLabel *changeRootsCountLabel = new QLabel("Изменение количества корней", this);
     QLineEdit *changeRootsCountInput = new QLineEdit(this);
     QPushButton *changeRootsCountButton = new QPushButton("Изменить", this);
-    // connect(changeRootsCountButton, &QPushButton::clicked, this, [this, changeRootsCountInput]() {
-    //     QString inputText = changeRootsCountInput->text();
-    //     changeRootsCount(inputText);
-    // });
+    connect(changeRootsCountButton, &QPushButton::clicked, this, [this, changeRootsCountInput]() {
+        QString inputText = changeRootsCountInput->text();
+        changeRootsCount(inputText);
+    });
     QHBoxLayout *changeRootsCountLayout = new QHBoxLayout();
     changeRootsCountLayout->addWidget(changeRootsCountLabel);
     changeRootsCountLayout->addWidget(changeRootsCountInput);
@@ -72,13 +71,15 @@ TInterface::TInterface(QWidget *parent)
     // Пункт 4: Изменить a_n и корни
     QLabel *newANAndRootsLabel = new QLabel("Изменить a_n и корни", this);
     QLineEdit *newANInput = new QLineEdit(this);
+    newANInput->setPlaceholderText("a_n");
+    newANInput->setMaximumWidth(60);
     QLineEdit *newRootsInput = new QLineEdit(this);
     QPushButton *newANAndRootsButton = new QPushButton("Изменить", this);
-    // connect(newANAndRootsButton, &QPushButton::clicked, this, [this, newANInput, newRootsInput]() {
-    //     QString anText = newANInput->text();
-    //     QString rootsText = newRootsInput->text();
-    //     newANAndRoots(anText, rootsText);
-    // });
+    connect(newANAndRootsButton, &QPushButton::clicked, this, [this, newANInput, newRootsInput]() {
+        QString anText = newANInput->text();
+        QString rootsText = newRootsInput->text();
+        newANAndRoots(anText, rootsText);
+    });
     QHBoxLayout *newANAndRootsLayout = new QHBoxLayout();
     newANAndRootsLayout->addWidget(newANAndRootsLabel);
     newANAndRootsLayout->addWidget(newANInput);
@@ -89,11 +90,12 @@ TInterface::TInterface(QWidget *parent)
     // Пункт 5: Вычислить значение в точке x
     QLabel *calculateValueAtXLabel = new QLabel("Вычислить значение в точке x", this);
     QLineEdit *calculateValueAtXInput = new QLineEdit(this);
+    calculateValueAtXInput->setPlaceholderText("число X");
     QPushButton *calculateValueAtXButton = new QPushButton("Вычислить", this);
-    // connect(calculateValueAtXButton, &QPushButton::clicked, this, [this, calculateValueAtXInput]() {
-    //     QString inputText = calculateValueAtXInput->text();
-    //     calculateValueAtX(inputText);
-    // });
+    connect(calculateValueAtXButton, &QPushButton::clicked, this, [this, calculateValueAtXInput]() {
+        QString inputText = calculateValueAtXInput->text();
+        calculateValueAtX(inputText);
+    });
     QHBoxLayout *calculateValueAtXLayout = new QHBoxLayout();
     calculateValueAtXLayout->addWidget(calculateValueAtXLabel);
     calculateValueAtXLayout->addWidget(calculateValueAtXInput);
@@ -104,8 +106,10 @@ TInterface::TInterface(QWidget *parent)
     QLabel *setNewPolynomialLabel = new QLabel("Задать новый полином", this);
     QLineEdit *setNewPolynomialANInput = new QLineEdit(this);
     setNewPolynomialANInput->setPlaceholderText("a_n");
+    setNewPolynomialANInput->setMaximumWidth(60);
     QLineEdit *setNewPolynomialRootsInput = new QLineEdit(this);
-    setNewPolynomialRootsInput->setPlaceholderText("корни через пробел");
+    setNewPolynomialRootsInput->setPlaceholderText("корни (через пробел)");
+    setNewPolynomialRootsInput->setMinimumWidth(150);
     QPushButton *setNewPolynomialButton = new QPushButton("Задать", this);
 
     // Создаем горизонтальный макет для метки и полей ввода
@@ -150,16 +154,22 @@ TInterface::~TInterface()
 
 void TInterface::showCanonicalForm()
 {
-    // Реализация вывода канонического вида полинома
-    // Для начала, просто выводим сообщение
-    QMessageBox::information(this, "Канонический вид", "Не реализовано");
+    QString outputText;
+
+    polynom->setPrintMode(EPrintMode::EPrintModeCanonical);
+    outputText << *polynom;
+
+    outputField->setText(outputText);
 }
 
 void TInterface::showClassicalForm()
 {
-    // Реализация вывода классического вида полинома
-    // Для начала, просто выводим сообщение
-    QMessageBox::information(this, "Классический вид", "Не реализовано");
+    QString outputText;
+
+    polynom->setPrintMode(EPrintMode::EPrintModeClassic);
+    outputText << *polynom;
+
+    outputField->setText(outputText);
 }
 
 void TInterface::changeRootsCount(QString& inputText)
@@ -178,9 +188,17 @@ void TInterface::newANAndRoots(QString& anText, QString& rootsText)
 
 void TInterface::calculateValueAtX(QString& inputText)
 {
-    // Реализация вычисления значения в точке x
-    // Для начала, просто выводим сообщение
-    QMessageBox::information(this, "Вычисление значения в точке x", "Не реализовано");
+    QString outputText;
+    number x;
+    inputText >> x;
+    number value = polynom->value(x);
+
+    outputText += "P(";
+    outputText << x;
+    outputText += ") = ";
+    outputText << value;
+
+    outputField->setText(outputText);
 }
 
 void TInterface::setNewPolynomial(QString& anText, QString& rootsText)
