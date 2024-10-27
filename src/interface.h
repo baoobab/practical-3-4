@@ -28,30 +28,43 @@ public slots:
     void exitApplication(); // Выход из приложения
 
 private:
-    TPolynom* polynom;
+    TPolynom *polynom;
+    QLineEdit *outputField;
+    QPushButton *clearButton;
+    QHBoxLayout *outputLayout;
+    QVBoxLayout *mainLayout;
 
-    QLineEdit* outputField;
+    QLabel *canonicalFormLabel;
+    QPushButton *canonicalFormButton;
+    QHBoxLayout *canonicalFormLayout;
 
-    QPushButton* clearButton;
+    QLabel *classicalFormLabel;
+    QPushButton *classicalFormButton;
+    QHBoxLayout *classicalFormLayout;
 
-    QPushButton* canonicalFormButton;
-    QPushButton* classicalFormButton;
+    QLabel *changeRootsCountLabel;
+    QLineEdit *changeRootsCountInput;
+    QPushButton *changeRootsCountButton;
+    QHBoxLayout *changeRootsCountLayout;
 
-    QLineEdit* changeRootsCountInput;
-    QPushButton* changeRootsCountButton;
+    QLabel *newANAndRootsLabel;
+    QLineEdit *newANInput;
+    QLineEdit *newRootIndexInput;
+    QPushButton *newANAndRootsButton;
+    QHBoxLayout *newANAndRootsLayout;
 
-    QLineEdit* newANInput;
-    QLineEdit* newRootsInput;
-    QPushButton* newANAndRootsButton;
+    QLabel *calculateValueAtXLabel;
+    QLineEdit *calculateValueAtXInput;
+    QPushButton *calculateValueAtXButton;
+    QHBoxLayout *calculateValueAtXLayout;
 
-    QLineEdit* calculateValueAtXInput;
-    QPushButton* calculateValueAtXButton;
+    QLabel *setNewPolynomialLabel;
+    QLineEdit *setNewPolynomialANInput;
+    QLineEdit *setNewPolynomialRootsInput;
+    QPushButton *setNewPolynomialButton;
+    QHBoxLayout *setNewPolynomialLayout;
 
-    QLineEdit* setNewPolynomialANInput;
-    QLineEdit* setNewPolynomialRootsInput;
-    QPushButton* setNewPolynomialButton;
-
-    QPushButton* exitButton;
+    QPushButton *exitButton;
 };
 
 #endif // INTERFACE_H

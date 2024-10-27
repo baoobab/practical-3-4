@@ -111,8 +111,8 @@ TInterface::TInterface(QWidget *parent)
     setNewPolynomialANInput->setPlaceholderText("a_n");
     setNewPolynomialANInput->setMaximumWidth(60);
     QLineEdit *setNewPolynomialRootsInput = new QLineEdit(this);
-    setNewPolynomialRootsInput->setPlaceholderText("корни (через пробел)");
-    setNewPolynomialRootsInput->setMinimumWidth(150);
+    setNewPolynomialRootsInput->setPlaceholderText("корни (через пробел, пример: (1 -2) (3 5))");
+    setNewPolynomialRootsInput->setMinimumWidth(250);
     QPushButton *setNewPolynomialButton = new QPushButton("Задать", this);
 
     // Создаем горизонтальный макет для метки и полей ввода
@@ -152,7 +152,42 @@ void TInterface::exitApplication() {
 TInterface::~TInterface()
 {
     delete polynom;
-    // TODO: мб делетнуть и все остальные указатели по Егорову
+    delete outputField;
+    delete clearButton;
+    delete outputLayout;
+    delete mainLayout;
+
+    delete canonicalFormLabel;
+    delete canonicalFormButton;
+    delete canonicalFormLayout;
+
+    delete classicalFormLabel;
+    delete classicalFormButton;
+    delete classicalFormLayout;
+
+    delete changeRootsCountLabel;
+    delete changeRootsCountInput;
+    delete changeRootsCountButton;
+    delete changeRootsCountLayout;
+
+    delete newANAndRootsLabel;
+    delete newANInput;
+    delete newRootIndexInput;
+    delete newANAndRootsButton;
+    delete newANAndRootsLayout;
+
+    delete calculateValueAtXLabel;
+    delete calculateValueAtXInput;
+    delete calculateValueAtXButton;
+    delete calculateValueAtXLayout;
+
+    delete setNewPolynomialLabel;
+    delete setNewPolynomialANInput;
+    delete setNewPolynomialRootsInput;
+    delete setNewPolynomialButton;
+    delete setNewPolynomialLayout;
+
+    delete exitButton;
 }
 
 void TInterface::showCanonicalForm()
@@ -200,7 +235,7 @@ void TInterface::changeRootsCount(QString& inputText)
     oldRootField->setText(infoText);
     oldRootField->setReadOnly(true);
 
-    int addedCount = polynom->changeArrRootSize(size); // меняем размер массива корней
+    int addedCount = size - polynom->getRootsCount() ;// polynom->changeArrRootSize(size); // меняем размер массива корней
 
     QString newRootLabelText = "Введите " + QString::number(addedCount) + " Новых корней (через пробел): "  ;
     QLabel* newRootLabel = new QLabel(newRootLabelText, dialog);
@@ -224,6 +259,7 @@ void TInterface::changeRootsCount(QString& inputText)
     {
         clearOutput();
         outputText.clear();
+        polynom->changeArrRootSize(size);
         outputText << *polynom;
         outputField->setText(outputText);
         QMessageBox::information(this, "Успех", "Массив изменён успешно");
@@ -241,38 +277,48 @@ void TInterface::changeRootsCount(QString& inputText)
         QStringList rootsList = newRootInput->text().split(' '); // Разделяем строку на части по пробелу
         if (rootsList.size() != addedCount * 2)
         {
-            QMessageBox::critical(this, "Ошибка", "Количество введенных корней не соответсвует необходимому, полиному будет установлено значение по умолчанию");
-            polynom->flushMemory();
+            QMessageBox::critical(this, "Ошибка", "Количество введенных корней не соответсвует необходимому, полином не изменится");
             return;
         }
-        QString arr[rootsList.size()];
-        int iter = 0;
-        for (const QString &item : rootsList)
-        {
-            arr[iter] = item;
-            iter++;
-        }
-        // если массив увеличился
-        for (int i = size - addedCount, j = 0; i < size; ++i, ++j)
-        {
-            number item;
-            QString concaetedNum;
-            concaetedNum = arr[j] + " " + arr[j+1];
 
-            concaetedNum >> item;
-            polynom->changeRootByIndex(i, item);
+        QString arr[2];
+        int iter = 0;
+
+        for (QString& item : rootsList)
+        {
+            if (!item.isEmpty())
+            { // Проверяем, что часть не пустая
+                arr[iter++] = item;
+            }
+
+            if (iter == 2)
+            {
+                QString concaetedNum;
+                number tmpNum;
+                concaetedNum = arr[0] + " " + arr[1];
+
+                concaetedNum >> tmpNum;
+
+                polynom->changeArrRootSize(polynom->getRootsCount() + 1);
+                polynom->changeRootByIndex(polynom->getRootsCount() - 1, tmpNum);
+
+                polynom->calcCoefFromRoots();
+
+                clearOutput();
+                outputText.clear();
+                outputText << *polynom;
+                outputField->setText(outputText);
+
+                iter = 0;
+            }
+
         }
-        polynom->calcCoefFromRoots();
 
         QMessageBox::information(this, "Успех", "Массив изменён успешно");
 
     }
 
     delete dialog;
-    clearOutput();
-    outputText.clear();
-    outputText << *polynom;
-    outputField->setText(outputText);
 
 }
 

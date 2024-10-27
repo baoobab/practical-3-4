@@ -18,6 +18,9 @@ TPolynom::~TPolynom() {
     this->flushMemory();
 }
 
+unsigned TPolynom::getRootsCount() {
+    return this->arrRoot->getSize();
+}
 
 void TPolynom::addCoef(number coef) {
     this->arrCoef->appendElement(coef);

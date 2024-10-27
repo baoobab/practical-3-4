@@ -25,6 +25,7 @@ public:
     void flushMemory();
     void setPrintMode(EPrintMode mode);
     void setCanonicCoef(number coef);
+    unsigned getRootsCount(); // Новый метод, возвращает количество заданных корней полинома
     number value(number val);
     friend ostream& operator<<(ostream&, TPolynom&);
     friend QString& operator<<(QString&, TPolynom&); // Новый метод, для вывода на интерфейс
