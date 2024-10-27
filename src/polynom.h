@@ -30,7 +30,7 @@ public:
     friend QString& operator<<(QString&, TPolynom&); // Новый метод, для вывода на интерфейс
     void calcCoefFromRoots();
     int changeArrRootSize(unsigned newSize); // Возврщает int - кол-во добавленных эл-тов
-    void changeRootByIndex(unsigned index, number newRoot);
+    bool changeRootByIndex(unsigned index, number newRoot); // UPD: теперь возвращает булеан - успешно ли изменился корень
     void printRoots();
     number getCanonicCoef();
 };

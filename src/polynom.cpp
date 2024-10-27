@@ -161,9 +161,9 @@ int TPolynom::changeArrRootSize(unsigned newSize) {
     return addedCount;
 }
 
-void TPolynom::changeRootByIndex(unsigned index, number newRoot)
+bool TPolynom::changeRootByIndex(unsigned index, number newRoot)
 {
-    arrRoot->replaceElement(index, newRoot);
+    return arrRoot->replaceElement(index, newRoot);
 }
 
 void TPolynom::printRoots()

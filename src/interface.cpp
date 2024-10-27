@@ -68,24 +68,26 @@ TInterface::TInterface(QWidget *parent)
     changeRootsCountLayout->addWidget(changeRootsCountButton);
     mainLayout->addLayout(changeRootsCountLayout);
 
-    // Пункт 4: Изменить a_n и корни
-    QLabel *newANAndRootsLabel = new QLabel("Изменить a_n и корни", this);
+    // Пункт 4: Изменить a_n и корень по индексу
+    QLabel *newANAndRootsLabel = new QLabel("Изменить a_n и корень по индексу", this);
     QLineEdit *newANInput = new QLineEdit(this);
-    newANInput->setPlaceholderText("a_n");
-    newANInput->setMaximumWidth(60);
-    QLineEdit *newRootsInput = new QLineEdit(this);
+    newANInput->setPlaceholderText("Новый a_n");
+    newANInput->setMaximumWidth(80);
+    QLineEdit *newRootIndexInput = new QLineEdit(this);
+    newRootIndexInput->setPlaceholderText("Индекс корня");
     QPushButton *newANAndRootsButton = new QPushButton("Изменить", this);
-    connect(newANAndRootsButton, &QPushButton::clicked, this, [this, newANInput, newRootsInput]() {
+    connect(newANAndRootsButton, &QPushButton::clicked, this, [this, newANInput, newRootIndexInput]() {
         QString anText = newANInput->text();
-        QString rootsText = newRootsInput->text();
-        newANAndRoots(anText, rootsText);
+        QString indexText = newRootIndexInput->text();
+        changeRootAndAN(anText, indexText);
     });
     QHBoxLayout *newANAndRootsLayout = new QHBoxLayout();
     newANAndRootsLayout->addWidget(newANAndRootsLabel);
     newANAndRootsLayout->addWidget(newANInput);
-    newANAndRootsLayout->addWidget(newRootsInput);
+    newANAndRootsLayout->addWidget(newRootIndexInput);
     newANAndRootsLayout->addWidget(newANAndRootsButton);
     mainLayout->addLayout(newANAndRootsLayout);
+
 
     // Пункт 5: Вычислить значение в точке x
     QLabel *calculateValueAtXLabel = new QLabel("Вычислить значение в точке x", this);
@@ -179,11 +181,85 @@ void TInterface::changeRootsCount(QString& inputText)
     QMessageBox::information(this, "Изменение количества корней", "Не реализовано");
 }
 
-void TInterface::newANAndRoots(QString& anText, QString& rootsText)
+void TInterface::changeRootAndAN(QString& anText, QString& indexText)
 {
-    // Реализация изменения a_n и корней
-    // Для начала, просто выводим сообщение
-    QMessageBox::information(this, "Изменение a_n и корней", "Не реализовано");
+    QString outputText; // Результирующая строка
+
+    if (anText.length() > 0)
+    {
+        number numAN; // Введённые данные для a_n в числовом представлении
+
+        anText >> numAN;
+        polynom->setCanonicCoef(numAN);
+
+        clearOutput();
+        outputText.clear();
+        outputText << *polynom;
+        outputField->setText(outputText);
+    }
+
+    bool ok;
+    int index = indexText.toInt(&ok);
+    QString infoText;
+
+    if (!ok || index < 0)
+    {
+        QMessageBox::critical(this, "Ошибка", "Некорректный индекс корня");
+        return;
+    }
+
+    // Создаем диалоговое окно для изменения корня
+    QDialog* dialog = new QDialog(this);
+    dialog->setWindowTitle("Изменить корень");
+
+    // Метка и readonly поле для старого корня
+    QLabel* oldRootLabel = new QLabel("Текущий полином (нумерация корней с нуля):", dialog);
+    QLineEdit* oldRootField = new QLineEdit(dialog);
+
+    infoText << *polynom;
+    oldRootField->setText(infoText);
+    oldRootField->setReadOnly(true);
+
+    // Поле ввода для нового корня
+    QString newRootLabelText = "Новый корень по индексу " + QString::number(index) + ":";
+    QLabel* newRootLabel = new QLabel(newRootLabelText, dialog);
+    QLineEdit* newRootInput = new QLineEdit(dialog);
+
+    // Кнопка подтверждения
+    QPushButton* confirmButton = new QPushButton("Подтвердить", dialog);
+    connect(confirmButton, &QPushButton::clicked, dialog, &QDialog::accept);
+
+    // Макет для диалогового окна
+    QVBoxLayout* dialogLayout = new QVBoxLayout();
+    dialogLayout->addWidget(oldRootLabel);
+    dialogLayout->addWidget(oldRootField);
+    dialogLayout->addWidget(newRootLabel);
+    dialogLayout->addWidget(newRootInput);
+    dialogLayout->addWidget(confirmButton);
+    dialog->setLayout(dialogLayout);
+
+    // Показываем диалоговое окно и ждем подтверждения
+    if (dialog->exec() == QDialog::Accepted)
+    {
+        number newRoot;
+        QString rootText;
+        rootText = newRootInput->text();
+        rootText >> newRoot;
+
+        bool isChanged = polynom->changeRootByIndex(index, newRoot);
+        if (isChanged) {
+            QMessageBox::information(this, "Успех", "Корень изменён успешно");
+        } else {
+            QMessageBox::critical(this, "Ошибка", "Корень не изменился, проверьте правильность ввода");
+        }
+    }
+
+    delete dialog;
+
+    clearOutput();
+    outputText.clear();
+    outputText << *polynom;
+    outputField->setText(outputText);
 }
 
 void TInterface::calculateValueAtX(QString& inputText)

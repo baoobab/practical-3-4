@@ -171,13 +171,14 @@ void TArray::reverseSort() {
     this->quickSortReverseHelper(0, this->size - 1);
 }
 
-void TArray::replaceElement(unsigned int index, number value) {
+bool TArray::replaceElement(unsigned int index, number value) {
     if (!checkIndex(index)) {
         cout << "\nIndex out of range\n";
-        return;
+        return false;
     }
 
     *(this->arr + index) = value;
+    return true;
 }
 
 void TArray::resizeArray(unsigned int newSize) {

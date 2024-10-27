@@ -25,7 +25,7 @@ public:
     void sort();
     void reverseSort();
     void flushMemory();
-    void replaceElement(unsigned int index, number value);
+    bool replaceElement(unsigned int index, number value); // UPD: теперь возвращает булеан - успешно ли изменился элемент
     void removeElementByIndex(unsigned int index);
     void fillArray(unsigned newSize, number el = 0);
     number get(unsigned idx);

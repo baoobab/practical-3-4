@@ -22,9 +22,9 @@ public slots:
     void showCanonicalForm(); // Вывод канонического вида полинома
     void showClassicalForm(); // Вывод классического вида полинома
     void changeRootsCount(QString& inputText); // Изменение кол-ва корней
-    void newANAndRoots(QString& anText, QString& rootsText); // Новый a_n и корни
     void calculateValueAtX(QString& inputText); // Вычислить значение в точке x
     void setNewPolynomial(QString& anText, QString& rootsText); // Задать новый полином вводом a_n и корней
+    void changeRootAndAN(QString& anText, QString& indexText); // Новый a_n и корни
     void exitApplication(); // Выход из приложения
 
 private:
