@@ -12,13 +12,13 @@ TInterface::TInterface(QWidget *parent)
     : QWidget(parent)
 {
     setWindowTitle("Многочлен на комплексных числах");
-    setFixedSize(400, 400); // Увеличена высота окна для размещения всех полей
+    // setFixedSize(400, 400); // Увеличена высота окна для размещения всех полей
+    setMaximumSize(600, 300);
 
     // Создаем пустой полином
     polynom = new TPolynom();
 
     // Создаём метку и поле вывода
-    outputLabel = new QLabel("Результат:", this);
     outputField = new QLineEdit(this); // Поле вывода в одну строку
     outputField->setReadOnly(true); // Делаем поле вывода только для чтения
     outputField->setPlaceholderText("Результат будет здесь..."); // Подсказка для пользователя
@@ -35,7 +35,6 @@ TInterface::TInterface(QWidget *parent)
 
     // Создаем вертикальный макет для всего интерфейса
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(outputLabel);
     mainLayout->addLayout(outputLayout);
 
     // Пункт 1: Вывод канонического вида полинома
@@ -121,7 +120,7 @@ TInterface::TInterface(QWidget *parent)
     connect(setNewPolynomialButton, &QPushButton::clicked, this, [this, setNewPolynomialANInput, setNewPolynomialRootsInput]() {
         QString anText = setNewPolynomialANInput->text();
         QString rootsText = setNewPolynomialRootsInput->text();
-        handleSetNewPolynomial(anText, rootsText);
+        setNewPolynomial(anText, rootsText);
     });
 
     // Добавляем кнопку "Выход"
@@ -143,10 +142,51 @@ void TInterface::exitApplication() {
     QApplication::quit();
 }
 
-TInterface::~TInterface() {}
+TInterface::~TInterface()
+{
+    delete polynom;
+    // TODO: мб делетнуть и все остальные указатели по Егорову
+}
 
-void TInterface::handleSetNewPolynomial(QString& anText, QString& rootsText) {
-    if (anText.length() > 0 && rootsText.length() > 0) {
+void TInterface::showCanonicalForm()
+{
+    // Реализация вывода канонического вида полинома
+    // Для начала, просто выводим сообщение
+    QMessageBox::information(this, "Канонический вид", "Не реализовано");
+}
+
+void TInterface::showClassicalForm()
+{
+    // Реализация вывода классического вида полинома
+    // Для начала, просто выводим сообщение
+    QMessageBox::information(this, "Классический вид", "Не реализовано");
+}
+
+void TInterface::changeRootsCount(QString& inputText)
+{
+    // Реализация изменения количества корней
+    // Для начала, просто выводим сообщение
+    QMessageBox::information(this, "Изменение количества корней", "Не реализовано");
+}
+
+void TInterface::newANAndRoots(QString& anText, QString& rootsText)
+{
+    // Реализация изменения a_n и корней
+    // Для начала, просто выводим сообщение
+    QMessageBox::information(this, "Изменение a_n и корней", "Не реализовано");
+}
+
+void TInterface::calculateValueAtX(QString& inputText)
+{
+    // Реализация вычисления значения в точке x
+    // Для начала, просто выводим сообщение
+    QMessageBox::information(this, "Вычисление значения в точке x", "Не реализовано");
+}
+
+void TInterface::setNewPolynomial(QString& anText, QString& rootsText)
+{
+    if (anText.length() > 0 && rootsText.length() > 0)
+    {
         number numAN; // Введённые данные для a_n в числовом представлении
         QString outputText; // Результирующая строка
 
@@ -159,16 +199,15 @@ void TInterface::handleSetNewPolynomial(QString& anText, QString& rootsText) {
         QString arr[2] = {};
         int tmp = 0;
 
-        for (QString& rootText : rootsList) {
-            if (!rootText.isEmpty()) { // Проверяем, что часть не пустая
+        for (QString& rootText : rootsList)
+        {
+            if (!rootText.isEmpty())
+            { // Проверяем, что часть не пустая
                 arr[tmp++] = rootText;
             }
 
-            qDebug() << "rt " << tmp << "\n";
-            qDebug() << "0 " << arr[0] << "\n";
-            qDebug() << "1 " << arr[1] << "\n";
-
-            if (tmp == 2) {
+            if (tmp == 2)
+            {
                 QString concaetedNum;
                 number tmpNum;
                 concaetedNum = arr[0] + " " + arr[1];
@@ -187,7 +226,9 @@ void TInterface::handleSetNewPolynomial(QString& anText, QString& rootsText) {
 
         }
 
-    } else {
+    }
+    else
+    {
         outputField->setText("Поле ввода пустое!");
     }
 }

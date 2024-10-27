@@ -2,57 +2,56 @@
 #define INTERFACE_H
 
 #include <QWidget>
-#include <QLabel>
 #include <QLineEdit>
+#include <QLabel>
 #include <QPushButton>
-#include <QString>
-#include <vector>
-#include <string>
-#include <QTextEdit>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "polynom.h"
 
-// Enum для хранения текущего действия
-enum class EAction {
-    None,
-    ShowCanonicalForm,
-    ShowClassicalForm,
-    ChangeRootsCount,
-    NewANAndRoots,
-    CalculateValueAtX,
-    SetNewPolynomial,
-    SetNewPolynomialRoot,
-    ExitApplication
-};
-
-class TInterface : public QWidget {
+class TInterface : public QWidget
+{
     Q_OBJECT
 
-    static const int buttonsCount = 7; // Общее количество кнопок в интерфейсе
-
-    QLabel *outputLabel; // Метка для результата
-    QLineEdit *outputField; // Поле вывода с горизонтальной прокруткой
-    QLineEdit *dynamicInput; // Поле для ввода, изменяющееся в зависимости от нажатой кнопки
-    QPushButton *buttons[buttonsCount]; // Массив кнопок
-
-    TPolynom *polynom; // Полином для работы с интерфесом
-    EAction currentAction = EAction::None;
 public:
     TInterface(QWidget *parent = nullptr);
     ~TInterface();
 
 public slots:
-    // void handleInputAndPerformActionForRoot(QString& inputText); // Новое действие для ввода корня
-    // void handleInputAndPerformAction(); // Новый слот для обработки ввода данных и выполнения действия
-    // void showCanonicalForm(); // Вывод канонического вида полинома
-    // void showClassicalForm(); // Вывод классического вида полинома
-    // void changeRootsCount(); // Изменение кол-ва корней
-    // void newANAndRoots(); // Новый a_n и корни
-    // void calculateValueAtX(QString& inputText); // Вычислить значение в точке x
-    // void setNewPolynomial(QString& inputText); // Задать новый полином вводом a_n и корней
-    void exitApplication(); // Выход из приложения
-    // QString handleInput();
     void clearOutput();
-    void handleSetNewPolynomial(QString& anText, QString& rootsText);
+    void showCanonicalForm(); // Вывод канонического вида полинома
+    void showClassicalForm(); // Вывод классического вида полинома
+    void changeRootsCount(QString& inputText); // Изменение кол-ва корней
+    void newANAndRoots(QString& anText, QString& rootsText); // Новый a_n и корни
+    void calculateValueAtX(QString& inputText); // Вычислить значение в точке x
+    void setNewPolynomial(QString& anText, QString& rootsText); // Задать новый полином вводом a_n и корней
+    void exitApplication(); // Выход из приложения
+
+private:
+    TPolynom* polynom;
+
+    QLineEdit* outputField;
+
+    QPushButton* clearButton;
+
+    QPushButton* canonicalFormButton;
+    QPushButton* classicalFormButton;
+
+    QLineEdit* changeRootsCountInput;
+    QPushButton* changeRootsCountButton;
+
+    QLineEdit* newANInput;
+    QLineEdit* newRootsInput;
+    QPushButton* newANAndRootsButton;
+
+    QLineEdit* calculateValueAtXInput;
+    QPushButton* calculateValueAtXButton;
+
+    QLineEdit* setNewPolynomialANInput;
+    QLineEdit* setNewPolynomialRootsInput;
+    QPushButton* setNewPolynomialButton;
+
+    QPushButton* exitButton;
 };
 
 #endif // INTERFACE_H
