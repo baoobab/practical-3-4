@@ -3,9 +3,6 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QApplication>
-#include <QtDebug>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
 #include "number.h"
 
 TInterface::TInterface(QWidget *parent)
@@ -219,7 +216,7 @@ void TInterface::changeRootsCount(QString& inputText)
 
     if (!ok || size <= 0)
     {
-        QMessageBox::critical(this, "Ошибка", "Некорректный размер нового массива");
+        QMessageBox::critical(this, "Ошибка", "Некорректный размер нового полинома");
         return;
     }
 
@@ -262,13 +259,13 @@ void TInterface::changeRootsCount(QString& inputText)
         polynom->changeArrRootSize(size);
         outputText << *polynom;
         outputField->setText(outputText);
-        QMessageBox::information(this, "Успех", "Массив изменён успешно");
+        QMessageBox::information(this, "Успех", "Полином изменён успешно");
         return;
     }
     // если размер массива не изменился
     if (addedCount == 0)
     {
-        QMessageBox::information(this, "Нет изменений", "Массив останется того же размера");
+        QMessageBox::information(this, "Нет изменений", "Полином останется того же размера");
         return;
     }
     // Показываем диалоговое окно и ждем подтверждения
@@ -314,7 +311,7 @@ void TInterface::changeRootsCount(QString& inputText)
 
         }
 
-        QMessageBox::information(this, "Успех", "Массив изменён успешно");
+        QMessageBox::information(this, "Успех", "Полином изменён успешно");
 
     }
 
@@ -331,12 +328,18 @@ void TInterface::changeRootAndAN(QString& anText, QString& indexText)
         number numAN; // Введённые данные для a_n в числовом представлении
 
         anText >> numAN;
+
         polynom->setCanonicCoef(numAN);
+        polynom->calcCoefFromRoots();
 
         clearOutput();
         outputText.clear();
         outputText << *polynom;
         outputField->setText(outputText);
+    } else
+    {
+        QMessageBox::information(this, "Инфо", "Поля пустые, изменений нет");
+        return;
     }
 
     bool ok;
@@ -345,7 +348,7 @@ void TInterface::changeRootAndAN(QString& anText, QString& indexText)
 
     if (!ok || index < 0)
     {
-        QMessageBox::critical(this, "Ошибка", "Некорректный индекс корня");
+        QMessageBox::information(this, "Инфо", "Корни не переданы, изменен только a_n");
         return;
     }
 
@@ -388,6 +391,13 @@ void TInterface::changeRootAndAN(QString& anText, QString& indexText)
         rootText >> newRoot;
 
         bool isChanged = polynom->changeRootByIndex(index, newRoot);
+        polynom->calcCoefFromRoots();
+
+        clearOutput();
+        outputText.clear();
+        outputText << *polynom;
+        outputField->setText(outputText);
+
         if (isChanged) {
             QMessageBox::information(this, "Успех", "Корень изменён успешно");
         } else {
@@ -397,10 +407,6 @@ void TInterface::changeRootAndAN(QString& anText, QString& indexText)
 
     delete dialog;
 
-    clearOutput();
-    outputText.clear();
-    outputText << *polynom;
-    outputField->setText(outputText);
 }
 
 void TInterface::calculateValueAtX(QString& inputText)
@@ -420,7 +426,7 @@ void TInterface::calculateValueAtX(QString& inputText)
 
 void TInterface::setNewPolynomial(QString& anText, QString& rootsText)
 {
-    if (anText.length() > 0 && rootsText.length() > 0)
+    if (anText.length() > 0)
     {
         number numAN; // Введённые данные для a_n в числовом представлении
         QString outputText; // Результирующая строка
@@ -429,6 +435,13 @@ void TInterface::setNewPolynomial(QString& anText, QString& rootsText)
 
         polynom->flushMemory();
         polynom->setCanonicCoef(numAN);
+
+        clearOutput();
+        outputText.clear();
+        outputText << *polynom;
+        outputField->setText(outputText);
+
+        if (rootsText.length() == 0) return;
 
         QStringList rootsList = rootsText.split(' '); // Разделяем строку на части по пробелу
         QString arr[2] = {};
